@@ -35,31 +35,23 @@ public class LCD {
 	};
 
 	public String display(final int i) {
-		List<Integer> digits = digitsAsList(i);
-		List<String[]> digitsAsStrings = digitsAsStrings(digits);
-		return join(digitsAsStrings);
+		return join(digitsAsListOfStringArrays(i));
 	}
 
-	private ArrayList<Integer> digitsAsList(int i) {
-		ArrayList<Integer> digits = new ArrayList<Integer>();
+	private List<String[]> digitsAsListOfStringArrays(int i) {
+		List<String[]> strings = new ArrayList<String[]>();
 		String[] split = (i + "").split("");
 		for (String s : split) {
-			if (notEmpty(s))
-				digits.add(Integer.valueOf(s));
+			if (notEmpty(s)) {
+				Integer anInt = Integer.valueOf(s);
+				strings.add(DIGITS.get(anInt));
+			}
 		}
-		return digits;
+		return strings;
 	}
 
 	private boolean notEmpty(String s) {
 		return ! "".equals(s);
-	}
-
-	private List<String[]> digitsAsStrings(List<Integer> digits) {
-		List<String[]> strings = new ArrayList<String[]>();
-		for (Integer digit : digits) {
-			strings.add(DIGITS.get(digit));
-		}
-		return strings;
 	}
 
 	private String join(List<String[]> digits) {
