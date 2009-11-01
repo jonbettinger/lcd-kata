@@ -56,7 +56,8 @@ public class LCD {
 
 	private String join(List<String[]> digits) {
 		StringBuffer display = new StringBuffer();
-		for (int i = 0; i < 5; i++) {
+		int numberOfLines = digits.get(0).length;
+		for (int i = 0; i < numberOfLines; i++) {
 			for (String[] aDigit : digits) {
 				display.append(aDigit[i]);
 				display.append(' ');
