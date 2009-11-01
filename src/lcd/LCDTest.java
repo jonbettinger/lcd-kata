@@ -134,12 +134,11 @@ public class LCDTest extends TestCase {
 		assertEquals(zero, lcd.display(0));
 	}
 	public void test23() {
-		String display = lcd.display(23);
-		System.out.println(display);
-		assertEquals(twentyThree, display);
+		assertEquals(twentyThree, lcd.display(23));
 	}
-	public void xtest345() {
-		assertEquals(cccxlv, lcd.display(345));
-		
+	public void test345() {
+		String display = lcd.display(345);
+		System.out.println(display);
+		assertEquals(cccxlv, display);
 	}
 }
