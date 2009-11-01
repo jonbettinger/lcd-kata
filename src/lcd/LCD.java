@@ -34,8 +34,8 @@ public class LCD {
 		}
 	};
 
-	public String display(final int i) {
-		return join(digitsAsListOfStringArrays(i));
+	public String display(final int theInt) {
+		return join(digitsAsListOfStringArrays(theInt));
 	}
 
 	private List<String[]> digitsAsListOfStringArrays(int i) {
