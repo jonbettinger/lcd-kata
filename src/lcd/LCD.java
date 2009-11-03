@@ -1,20 +1,24 @@
 package lcd;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("serial")
 public class LCD {
+	Transposer transposer = new Transposer();
+
+	private Functor<Iterable<String>, String> joinWithSpace = new Join(' ');
+	private Functor<Iterable<String>, String> joinWithNewline = new Join('\n');
 	private static final String RIGHT = "  |";
 	private static final String LEFT = "|  ";
 	private static final String BOTH = "| |";
 	private static final String BLANK = "   ";
 	private static final String MIDDLE = " - ";
-	private static final String newline = "\n";
-	
-	private static final Map<Integer, String[]> DIGITS = new HashMap<Integer, String[]>() {
+
+	private static final Map<Integer, List<String>> DIGITS = new HashMap<Integer, List<String>>() {
 		{
 			put(1, digit(BLANK, RIGHT, BLANK, RIGHT, BLANK));
 			put(2, digit(MIDDLE, RIGHT, MIDDLE, LEFT, MIDDLE));
@@ -28,18 +32,22 @@ public class LCD {
 			put(0, digit(MIDDLE, BOTH, BLANK, BOTH, MIDDLE));
 		}
 
-		private String[] digit(String top, String midTop, String middle,
+		private List<String> digit(String top, String midTop, String middle,
 				String midBottom, String bottom) {
-			return new String[] { top, midTop, middle, midBottom, bottom};
+			return Arrays.asList(top, midTop, middle, midBottom, bottom);
 		}
 	};
 
 	public String display(final int theInt) {
-		return join(digitsAsListOfStringArrays(theInt));
+		Iterable<Iterable<String>> digitsAsListOfStringArrays = digitsAsListOfStringArrays(theInt);
+		Iterable<Iterable<String>> transposedDigits = transposer
+				.transpose(digitsAsListOfStringArrays);
+		Iterable<String> lines = map(transposedDigits, joinWithSpace);
+		return joinWithNewline.invoke(lines);
 	}
 
-	private List<String[]> digitsAsListOfStringArrays(int i) {
-		List<String[]> strings = new ArrayList<String[]>();
+	private Iterable<Iterable<String>> digitsAsListOfStringArrays(int i) {
+		List<Iterable<String>> strings = new ArrayList<Iterable<String>>();
 		String[] split = (i + "").split("");
 		for (String s : split) {
 			if (notEmpty(s)) {
@@ -51,25 +59,14 @@ public class LCD {
 	}
 
 	private boolean notEmpty(String s) {
-		return ! "".equals(s);
+		return !"".equals(s);
 	}
 
-	private String join(List<String[]> digits) {
-		StringBuffer display = new StringBuffer();
-		int numberOfLines = digits.get(0).length;
-		for (int i = 0; i < numberOfLines; i++) {
-			for (String[] aDigit : digits) {
-				display.append(aDigit[i]);
-				display.append(' ');
-			}
-			chomp(display);
-			display.append(newline);
+	private <I, O> Iterable<O> map(Iterable<I> iterable, Functor<I, O> functor) {
+		List<O> result = new ArrayList<O>();
+		for (I i : iterable) {
+			result.add(functor.invoke(i));
 		}
-		return chomp(display).toString();
-	}
-
-	private StringBuffer chomp(StringBuffer string) {
-		string.deleteCharAt(string.length()-1);
-		return string;
+		return result;
 	}
 }
