@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 public class TransposerTest extends TestCase {
 
 	@SuppressWarnings("serial")
-	public void testTransposeOn2by2Returns2by2() {
+	public void testTransposeOn2by2Returns2by2Transposed() {
 		Transposer transposer = new Transposer();
 		final Iterable<String> numbers = new ArrayList<String>() {
 			{
@@ -42,7 +42,7 @@ public class TransposerTest extends TestCase {
 	}
 
 	@SuppressWarnings("serial")
-	public void testTransposeOn1by2Returns2by1() {
+	public void testTransposeOn1by2Returns2by1Transposed() {
 		Transposer transposer = new Transposer();
 		final Iterable<String> numbers = new ArrayList<String>() {
 			{
@@ -62,8 +62,7 @@ public class TransposerTest extends TestCase {
 		};
 		Iterable<Iterable<String>> result = transposer.transpose(input);
 		assertEquals(1, size(result));
-		Iterator<Iterable<String>> innerIterables = result.iterator();
-		Iterable<String> firstResult = innerIterables.next();
+		Iterable<String> firstResult = result.iterator().next();
 		assertEquals(2, size(firstResult));
 		Iterator<String> firstResultIterator = firstResult.iterator();
 		assertEquals("one", firstResultIterator.next());

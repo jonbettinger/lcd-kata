@@ -1,14 +1,14 @@
 package lcd;
 
 public class Join implements Functor<Iterable<String>, String> {
-	final char c;
+	final char with;
 
-	public Join(final char c) {
-		this.c = c;
+	public Join(char with) {
+		this.with = with;
 	}
 
 	public String invoke(Iterable<String> input) {
-		return join(input, c);
+		return join(input, with);
 	}
 
 	private String join(Iterable<String> line, char c) {

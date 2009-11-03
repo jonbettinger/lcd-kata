@@ -8,8 +8,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public class LCD {
-	Transposer transposer = new Transposer();
-
+	private Transposer transposer = new Transposer();
 	private Functor<Iterable<String>, String> joinWithSpace = new Join(' ');
 	private Functor<Iterable<String>, String> joinWithNewline = new Join('\n');
 	private static final String RIGHT = "  |";
@@ -18,7 +17,7 @@ public class LCD {
 	private static final String BLANK = "   ";
 	private static final String MIDDLE = " - ";
 
-	private static final Map<Integer, List<String>> DIGITS = new HashMap<Integer, List<String>>() {
+	private static final Map<Integer, Iterable<String>> DIGITS = new HashMap<Integer, Iterable<String>>() {
 		{
 			put(1, digit(BLANK, RIGHT, BLANK, RIGHT, BLANK));
 			put(2, digit(MIDDLE, RIGHT, MIDDLE, LEFT, MIDDLE));
@@ -32,30 +31,28 @@ public class LCD {
 			put(0, digit(MIDDLE, BOTH, BLANK, BOTH, MIDDLE));
 		}
 
-		private List<String> digit(String top, String midTop, String middle,
+		private Iterable<String> digit(String top, String midTop, String middle,
 				String midBottom, String bottom) {
 			return Arrays.asList(top, midTop, middle, midBottom, bottom);
 		}
 	};
 
 	public String display(final int theInt) {
-		Iterable<Iterable<String>> digitsAsListOfStringArrays = digitsAsListOfStringArrays(theInt);
-		Iterable<Iterable<String>> transposedDigits = transposer
-				.transpose(digitsAsListOfStringArrays);
+		Iterable<Iterable<String>> listOfDigitsAsIterableStrings = listOfDigitsAsIterableStrings(theInt);
+		Iterable<Iterable<String>> transposedDigits = transposer.transpose(listOfDigitsAsIterableStrings);
 		Iterable<String> lines = map(transposedDigits, joinWithSpace);
 		return joinWithNewline.invoke(lines);
 	}
 
-	private Iterable<Iterable<String>> digitsAsListOfStringArrays(int i) {
-		List<Iterable<String>> strings = new ArrayList<Iterable<String>>();
+	private Iterable<Iterable<String>> listOfDigitsAsIterableStrings(int i) {
+		List<Iterable<String>> digitsAsIterableStrings = new ArrayList<Iterable<String>>();
 		String[] split = (i + "").split("");
 		for (String s : split) {
 			if (notEmpty(s)) {
-				Integer anInt = Integer.valueOf(s);
-				strings.add(DIGITS.get(anInt));
+				digitsAsIterableStrings.add(DIGITS.get(Integer.valueOf(s)));
 			}
 		}
-		return strings;
+		return digitsAsIterableStrings;
 	}
 
 	private boolean notEmpty(String s) {
